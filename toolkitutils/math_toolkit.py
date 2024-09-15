@@ -1,7 +1,5 @@
 import math
-from typing import List, Union, Tuple, Dict, Any, Annotated, Literal
-
-
+from typing import List, Union, Tuple, Dict, Any, Annotated, Literal, Set
 
 Operator = Literal["+", "-", "*", "/"]
 
@@ -68,9 +66,9 @@ class MathToolkit:
             return args[0] * args[1]
         elif operation == "trapezoid_area":
             return 0.5 * (args[0] + args[1]) * args[2]
-        elif operation == "regular_hexagon_area":
+        elif operation == "reg_hexagon_area":
             return 3 * math.sqrt(3) * args[0] ** 2 / 2
-        elif operation == "regular_polygon_area":
+        elif operation == "reg_polygon_area":
             n, s = args
             return (n * s ** 2) / (4 * math.tan(math.pi / n))
         elif operation == "circle_area":
@@ -83,7 +81,7 @@ class MathToolkit:
             return math.pi * args[0] ** 2 * args[1] / 3
         elif operation == "cone_surface_area":
             return math.pi * args[0] * (args[0] + args[1])
-        elif operation == "cylinder_volume":
+        elif operation == "cyli_volume":
             return math.pi * args[0] ** 2 * args[1]
         elif operation == "cylinder_surface_area":
             return 2 * math.pi * args[0] * (args[0] + args[1])
@@ -105,7 +103,7 @@ class MathToolkit:
         Operations:
         - 
         """
-        if operation == "quadratic_roots":
+        if operation == "quad_roots":
             a, b, c = args
             discriminant = b ** 2 - 4 * a * c
             if discriminant > 0:
@@ -114,17 +112,17 @@ class MathToolkit:
                 return -b / (2 * a),
             else:
                 return []
-        elif operation == "arithmetic_series_sum":
+        elif operation == "add_series_sum":
             return (args[2] / 2) * (args[0] + args[1])
-        elif operation == "geometric_series_sum":
+        elif operation == "geo_series_sum":
             if args[1] == 1:
                 return args[0] * args[2]
             return args[0] * (1 - args[1] ** args[2]) / (1 - args[1])
-        elif operation == "infinite_geometric_series_sum":
+        elif operation == "inf_geo_series_sum":
             if abs(args[1]) >= 1:
                 raise ValueError("Ratio must be less than 1 for infinite series")
             return args[0] / (1 - args[1])
-        elif operation == "logarithm":
+        elif operation == "log":
             return math.log(args[1], args[0])
         elif operation == "exponent":
             return args[0] ** args[1]
@@ -198,7 +196,7 @@ class MathToolkit:
             if n > 1:
                 result *= (1 - 1/n)
             return int(result)
-        elif operation == "modular_exponentiation":
+        elif operation == "mod_exponentiation":
             base, exponent, modulus = args
             result = 1
             base = base % modulus
@@ -235,7 +233,7 @@ class MathToolkit:
         elif operation == "law_of_sines":
             a, A, B = args
             return a * math.sin(B) / math.sin(A)
-        elif operation == "law_of_cosines":
+        elif operation == "law_of_cos":
             a, b, C = args
             return math.sqrt(a**2 + b**2 - 2*a*b*math.cos(C))
         else:
@@ -328,12 +326,15 @@ def unified_calculator(category: str, operation: str, params: Dict[str, Any]) ->
     else:
         raise ValueError(f"Unknown category: {category}")
 # Example usage
-if __name__ == "__main__":
-    '''
-    print(geometry_calculator("triangle_area", 5, 3))  # Output: 7.5
-    print(algebra_calculator("quadratic_roots", 1, 5, 6))  # Output: (-2.0, -3.0)
-    print(MathToolkit.number_theory("is_prime", 17))  # Output: True
-    print(MathToolkit.trigonometry("sin_cos_tan", math.pi/4))  # Output: (0.7071067811865475, 0.7071067811865476, 0.9999999999999999)
-    print(MathToolkit.statistics("mean", [1, 2, 3, 4, 5]))  # Output: 3.0
-    print(MathToolkit.probability("binomial_probability", 10, 3, 0.5))  # Output: 0.11718750000000001
-    '''
+
+def get_available_operations():
+    """
+    Generate a list of all available operations in MathToolkit.
+    """
+    operations = []
+    for category in ['geometry', 'algebra', 'number_theory', 'trigonometry', 'statistics', 'probability']:
+        method = getattr(MathToolkit, category)
+        operations.extend([f"{category}.{op}" for op in method.__doc__.split('Operations:')[1].split('-')[1:]])
+    return [op.strip().split(':')[0] for op in operations if op.strip()]
+
+AVAILABLE_OPERATIONS = get_available_operations()

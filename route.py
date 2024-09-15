@@ -148,16 +148,19 @@ def route_query(query):
             yield chunk
     if "mistral" in model:
         for chunk in ssh_ml_query(query,"mistral"):
+            #print(chunk)
             yield chunk
         
     return final_response
 
+
 #Testing Purposes
 def main():
     query = "What Large Language Model are you"
+    '''
     for chunk in route_query(query):
-        print(chunk, end='', flush=True)
-    print() 
+        #print(chunk, end='', flush=True)
+'''
     
     
 if __name__ == "__main__":

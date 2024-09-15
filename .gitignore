@@ -1,5 +1,5 @@
 autogenAgent.py
-hack/
+backend/hack/
 .env
 .cache/41/cache.db
 .cache/42/cache.db
